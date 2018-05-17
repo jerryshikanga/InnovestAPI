@@ -24,7 +24,10 @@ SECRET_KEY = 'cpokx4bp9a8soqph2kncg(s1-hhk#a(2jt+^p)paxy)n506@zz'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '10.0.2.2',
+]
 
 # Application definition
 
@@ -81,6 +84,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE': 'django.db.backends.mysql',
+        # 'HOST' : 'localhost',
+        # 'DATABASE':'innovest',
+        # 'USER' : 'shikanga',
+        # 'PASSWORD' : 'shikanga',
     }
 }
 
@@ -133,7 +141,26 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.MultiPartParser',
-        'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FileUploadParser'
     )
 }
+
+
+# MPesa settings
+MPESA_ENVIRONMENT = "sandbox"
+MPESA_CONSUMER_KEY = "C9Ne1xW9QOqfXA4pNSqvr30BcPTzSdQm"
+MPESA_CONSUMER_SECRET = "h3BvVJk9OBn7YROw"
+LIPA_NA_MPESA_ONLINE_SHORTCODE = "174379"
+LIPA_NA_MPESA_ONLINE_PASSKEY = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919"
+MPESA_INITIATOR_NAME_SC_1 = "apitest361"
+MPESA_SECURITY_CREDENTIAL_SC_1 = "361reset"
+MPESA_SHORTCODE_1 = "600348"
+
+
+# email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com' # mail service smtp
+EMAIL_HOST_USER = 'lumbasi.jerry@students.jkuat.ac.ke' # email id
+EMAIL_HOST_PASSWORD = 'shikanga' #password
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

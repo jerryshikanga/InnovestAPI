@@ -10,14 +10,25 @@ from rest_framework.authtoken.models import Token
 # Create your models here.
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='account',)
-    picture = models.ImageField(upload_to='account', null=True)
+    picture = models.ImageField(upload_to='account', default="account/default_profile.jpg")
     interests = models.ManyToManyField(Category)
     balance = models.IntegerField(default=0)
+    telephone = models.BigIntegerField(default=0)
 
     def __str__(self):
-        if self.user.get_full_name() is None :
-            return self.user.username
+        return self.user.username
 
+    def deposit(self, amount):
+        self.balance += amount
+        self.save()
+        return True
+
+    def withdraw(self, amount):
+        if self.balance >= amount :
+            self.balance -= amount
+            self.save()
+            return True
+        return False
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

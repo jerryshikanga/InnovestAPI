@@ -1,24 +1,13 @@
-from rest_framework import generics,permissions, views, response
+from rest_framework import generics,permissions, views
 from .models import Bid
-from . serializers import BidSerializer
+from . serializers import BidSerializer, NewBidSerializer
+from rest_framework.response import Response
 
 
 # Create your views here.
 class ListBid(generics.ListAPIView) :
     serializer_class = BidSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
-
-    def perform_create(self, serializer):
-        if serializer.validated_data.get('amount') < self.request.user.account.balance :
-            serializer.save(user=self.request.user)
-        else :
-
-            # return response({
-            #     "error": "Account balance insufficient",
-            #     "amount": serializer.validated_data.get('amount'),
-            #     "balance": self.request.user.account.balance,
-            # })
-            pass
 
     def get_queryset(self):
         if self.request.user.is_authenticated :
@@ -29,14 +18,28 @@ class ListBid(generics.ListAPIView) :
 
 class NewBid(views.APIView) :
     def post (self, request, format=None, **kwargs):
-        serializer = BidSerializer(data=request.data)
+        serializer = NewBidSerializer(data=request.data)
         if serializer.is_valid() :
             if serializer.validated_data['amount'] < self.request.user.account.balance :
-                bid = serializer.save()
-                return response.Response(bid)
+                if serializer.validated_data['amount'] <= 0 :
+                    response = {
+                        'status': False,
+                        'message': "Invalid amount"
+                    }
+                    return Response(response)
+                else :
+                    bid = serializer.save(user=request.user)
+                    response = {
+                        'status':True,
+                        'message':"Bid placed successfully"
+                    }
+                    return Response(response)
             else :
-                return response.Response({
-                    "error":"Insufficient balance",
+                return Response({
+                    "status" : False,
+                    "message":"Insufficient balance",
                     "amount":serializer.validated_data['amount'],
                     "balance": self.request.user.account.balance,
                 })
+        else :
+            return Response(serializer.errors, status=400)

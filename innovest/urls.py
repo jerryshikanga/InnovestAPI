@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -22,4 +23,8 @@ urlpatterns = [
     path('bid/', include('bid.urls')),
     path('campaign/', include('campaign.urls')),
     path('category/', include('category.urls')),
+
+    path('statistics/', views.StatisticsView.as_view(), name='statistics'),
+    path('auth/', include('django.contrib.auth.urls')),
+    path('refer/', views.ReferUser.as_view(), name='refer'),
 ]
